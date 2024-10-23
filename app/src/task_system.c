@@ -176,6 +176,28 @@ void task_system_update(void *parameters)
 
 				break;
 
+			case ST_SYS_XX_START:
+				break;
+
+			case ST_SYS_XX_INSIDE:
+				break;
+
+			case ST_SYS_XX_PRINT:
+				break;
+
+			case ST_SYS_XX_PULLED:
+				break;
+
+			case ST_SYS_XX_OPEN:
+				break;
+
+			case ST_SYS_XX_EXIT:
+				break;
+
+			case ST_SYS_XX_LOW:
+				break;
+
+
 			default:
 
 				break;

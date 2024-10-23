@@ -62,12 +62,42 @@
 /********************** internal data declaration ****************************/
 const task_sensor_cfg_t task_sensor_cfg_list[] = {
 	{ID_BTN_A,  BTN_A_PORT,  BTN_A_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX,
-	 EV_SYS_XX_IDLE,  EV_SYS_XX_ACTIVE}
+	 EV_SYS_XX_IDLE,  EV_SYS_XX_ACTIVE},
+
+	{ID_BTN_S1,  BTN_S1_PORT,  BTN_S1_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX,
+	 EV_SYS_XX_CARIN,  EV_SYS_XX_NOCARIN},
+
+	{ID_BTN_S2,  BTN_S2_PORT,  BTN_S2_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX,
+	 EV_SYS_XX_ASKTICKET, NOEVENT},
+
+	{ID_BTN_S3,  BTN_S3_PORT,  BTN_S3_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX,
+	 EV_SYS_XX_TAKETICKET,  EV_SYS_XX_NOTAKETICKET},
+
+	{ID_BTN_S4,  BTN_S4_PORT,  BTN_S4_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX,
+	 EV_SYS_XX_BARRIERUP,  NOEVENT},
+
+	{ID_BTN_S5,  BTN_S5_PORT,  BTN_S5_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX,
+	 EV_SYS_XX_CAROUT,  NOEVENT},
+
+	{ID_BTN_S6,  BTN_S6_PORT,  BTN_S6_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX,
+	 EV_SYS_XX_BARRIERDOWN,  NOEVENT}
 };
 
 #define SENSOR_CFG_QTY	(sizeof(task_sensor_cfg_list)/sizeof(task_sensor_cfg_t))
 
 task_sensor_dta_t task_sensor_dta_list[] = {
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP, 0},
+
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP, 0},
+
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP, 0},
+
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP, 0},
+
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP, 0},
+
+	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP, 0},
+
 	{DEL_BTN_XX_MIN, ST_BTN_XX_UP, EV_BTN_XX_UP, 0}
 };
 
@@ -199,6 +229,8 @@ void task_sensor_update(void *parameters)
 
 					if (EV_BTN_XX_DOWN == p_task_sensor_dta->event && p_task_sensor_dta->tick  == 0 && p_task_sensor_dta->modo  == 1)
 					{
+						if(p_task_sensor_cfg->button_second_tap == NOEVENT)
+							continue;
 						put_event_task_system(p_task_sensor_cfg->button_second_tap);
 						p_task_sensor_dta->state = ST_BTN_XX_DOWN;
 
@@ -207,6 +239,7 @@ void task_sensor_update(void *parameters)
 					break;
 
 				case ST_BTN_XX_DOWN:
+
 					if (EV_BTN_XX_UP == p_task_sensor_dta->event)
 					{
 						p_task_sensor_dta->state = ST_BTN_XX_RISING;
