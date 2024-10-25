@@ -231,6 +231,14 @@ void task_sensor_update(void *parameters)
 					{
 						if(p_task_sensor_cfg->button_second_tap == NOEVENT)
 							continue;
+
+						if(p_task_sensor_cfg->button_second_tap == EV_SYS_XX_NOCARIN){
+							for (uint32_t index1 = 0; SENSOR_DTA_QTY > index1; index1++){
+								task_sensor_dta_t *aux = &task_sensor_dta_list[index1];
+								aux->modo=0;
+							}
+							p_task_sensor_dta->modo = 1;
+						}
 						put_event_task_system(p_task_sensor_cfg->button_second_tap);
 						p_task_sensor_dta->state = ST_BTN_XX_DOWN;
 

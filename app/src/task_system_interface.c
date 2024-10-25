@@ -50,7 +50,7 @@
 #include "task_system_attribute.h"
 
 /********************** macros and definitions *******************************/
-#define EVENT_UNDEFINED	(255)
+#define NOEVENT	(255)
 #define MAX_EVENTS		(16)
 
 /********************** internal data declaration ****************************/
@@ -78,7 +78,7 @@ void init_queue_event_task_system(void)
 	queue_task_a.count = 0;
 
 	for (i = 0; i < MAX_EVENTS; i++)
-		queue_task_a.queue[i] = EVENT_UNDEFINED;
+		queue_task_a.queue[i] = NOEVENT;
 }
 
 void put_event_task_system(task_system_ev_t event)
@@ -97,7 +97,7 @@ task_system_ev_t get_event_task_system(void)
 
 	queue_task_a.count--;
 	event = queue_task_a.queue[queue_task_a.tail];
-	queue_task_a.queue[queue_task_a.tail++] = EVENT_UNDEFINED;
+	queue_task_a.queue[queue_task_a.tail++] = NOEVENT;
 
 	if (MAX_EVENTS == queue_task_a.tail)
 		queue_task_a.tail = 0;

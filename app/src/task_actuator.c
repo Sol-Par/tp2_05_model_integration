@@ -67,7 +67,7 @@ const task_actuator_cfg_t task_actuator_cfg_list[] = {
 #define ACTUATOR_CFG_QTY	(sizeof(task_actuator_cfg_list)/sizeof(task_actuator_cfg_t))
 
 task_actuator_dta_t task_actuator_dta_list[] = {
-	{DEL_LED_XX_MIN, ST_LED_XX_OFF, EV_LED_XX_NOT_BLINK, false}
+	{DEL_LED_XX_MIN, ST_LED_XX_OFF, EV_LED_XX_NO_BLINK, false}
 };
 
 #define ACTUATOR_DTA_QTY	(sizeof(task_actuator_dta_list)/sizeof(task_actuator_dta_t))

@@ -107,7 +107,7 @@ extern "C" {
 /* Events to excite Task Actuator */
 typedef enum task_actuator_ev {EV_LED_XX_OFF,
 							   EV_LED_XX_ON,
-							   EV_LED_XX_NOT_BLINK,
+							   EV_LED_XX_NO_BLINK,
 							   EV_LED_XX_BLINK,
 							   EV_LED_XX_PULSE} task_actuator_ev_t;
 

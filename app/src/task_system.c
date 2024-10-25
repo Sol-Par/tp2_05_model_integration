@@ -62,7 +62,7 @@
 
 /********************** internal data declaration ****************************/
 task_system_dta_t task_system_dta =
-	{DEL_SYS_XX_MIN, ST_SYS_XX_IDLE, EV_SYS_XX_IDLE, false};
+	{DEL_SYS_XX_MIN, ST_SYS_XX_START, EV_SYS_XX_IDLE, false};
 
 #define SYSTEM_DTA_QTY	(sizeof(task_system_dta)/sizeof(task_system_dta_t))
 
@@ -177,24 +177,91 @@ void task_system_update(void *parameters)
 				break;
 
 			case ST_SYS_XX_START:
+				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_CARIN == p_task_system_dta->event))
+				{
+					p_task_system_dta->flag = false;
+					p_task_system_dta->state = ST_SYS_XX_INSIDE;
+					LOGGER_LOG("Carin\n");
+				}
 				break;
 
 			case ST_SYS_XX_INSIDE:
+				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_NOCARIN == p_task_system_dta->event))
+				{
+					p_task_system_dta->flag = false;
+					p_task_system_dta->state = ST_SYS_XX_START;
+					LOGGER_LOG("No carin\n");
+
+
+
+				}
+
+				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_ASKTICKET == p_task_system_dta->event))
+				{
+					p_task_system_dta->flag = false;
+					p_task_system_dta->state = ST_SYS_XX_PRINT;
+					put_event_task_actuator(EV_LED_XX_ON, ID_LED_A);
+					LOGGER_LOG("Ask ticket\n");
+				}
 				break;
 
 			case ST_SYS_XX_PRINT:
+				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_NOCARIN == p_task_system_dta->event))
+				{
+					p_task_system_dta->flag = false;
+					p_task_system_dta->state = ST_SYS_XX_START;
+					put_event_task_actuator(EV_LED_XX_OFF, ID_LED_A);
+					LOGGER_LOG("No carin\n");
+				}
+				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_NOTAKETICKET == p_task_system_dta->event))
+				{
+					p_task_system_dta->flag = false;
+					p_task_system_dta->state = ST_SYS_XX_INSIDE;
+					put_event_task_actuator(EV_LED_XX_ON, ID_LED_A);
+					LOGGER_LOG("No take ticket\n");
+				}
+				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_TAKETICKET == p_task_system_dta->event))
+				{
+					p_task_system_dta->flag = false;
+					put_event_task_actuator(EV_LED_XX_BLINK, ID_LED_A);
+					p_task_system_dta->state = ST_SYS_XX_PULLED;
+					LOGGER_LOG("Take ticket\n");
+				}
 				break;
 
 			case ST_SYS_XX_PULLED:
+				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_BARRIERUP == p_task_system_dta->event))
+				{
+					p_task_system_dta->flag = false;
+					put_event_task_actuator(EV_LED_XX_NO_BLINK, ID_LED_A);
+					p_task_system_dta->state = ST_SYS_XX_OPEN;
+					LOGGER_LOG("Barrier up\n");
+				}
 				break;
 
 			case ST_SYS_XX_OPEN:
+				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_CAROUT == p_task_system_dta->event))
+				{
+					p_task_system_dta->flag = false;
+					put_event_task_actuator(EV_LED_XX_BLINK, ID_LED_A);
+					p_task_system_dta->state = ST_SYS_XX_EXIT;
+					LOGGER_LOG("Carout\n");
+				}
 				break;
 
 			case ST_SYS_XX_EXIT:
+				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_BARRIERDOWN== p_task_system_dta->event))
+				{
+					p_task_system_dta->flag = false;
+					put_event_task_actuator(EV_LED_XX_NO_BLINK, ID_LED_A);
+					p_task_system_dta->state = ST_SYS_XX_LOW;
+					LOGGER_LOG("Barrier down\n");
+				}
 				break;
 
 			case ST_SYS_XX_LOW:
+				p_task_system_dta->state = ST_SYS_XX_START;
+				LOGGER_LOG("Termino\n");
 				break;
 
 
