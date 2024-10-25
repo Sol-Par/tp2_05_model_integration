@@ -82,7 +82,7 @@ extern "C" {
  */
 
 /* Events to excite Task Sensor */
-typedef enum task_sensor_ev {EV_BTN_XX_UP, EV_BTN_XX_DOWN, NOEVENT} task_sensor_ev_t;
+typedef enum task_sensor_ev {EV_BTN_XX_UP, EV_BTN_XX_DOWN} task_sensor_ev_t;
 
 /* States of Task Sensor */
 typedef enum task_sensor_st {ST_BTN_XX_UP, ST_BTN_XX_FALLING, ST_BTN_XX_DOWN, ST_BTN_XX_RISING} task_sensor_st_t;

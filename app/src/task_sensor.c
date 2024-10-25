@@ -62,7 +62,7 @@
 /********************** internal data declaration ****************************/
 const task_sensor_cfg_t task_sensor_cfg_list[] = {
 	{ID_BTN_A,  BTN_A_PORT,  BTN_A_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX,
-	 EV_SYS_XX_IDLE,  EV_SYS_XX_ACTIVE},
+	 EV_SYS_XX_ACTIVE,  EV_SYS_XX_IDLE},
 
 	{ID_BTN_S1,  BTN_S1_PORT,  BTN_S1_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX,
 	 EV_SYS_XX_CARIN,  EV_SYS_XX_NOCARIN},
@@ -229,10 +229,11 @@ void task_sensor_update(void *parameters)
 
 					if (EV_BTN_XX_DOWN == p_task_sensor_dta->event && p_task_sensor_dta->tick  == 0 && p_task_sensor_dta->modo  == 1)
 					{
-						if(p_task_sensor_cfg->button_second_tap == NOEVENT)
+
+						if(p_task_sensor_cfg->button_second_tap == (task_sensor_ev_t)NOEVENT)
 							continue;
 
-						if(p_task_sensor_cfg->button_second_tap == EV_SYS_XX_NOCARIN){
+						if(p_task_sensor_cfg->button_second_tap == (task_sensor_ev_t)EV_SYS_XX_NOCARIN){
 							for (uint32_t index1 = 0; SENSOR_DTA_QTY > index1; index1++){
 								task_sensor_dta_t *aux = &task_sensor_dta_list[index1];
 								aux->modo=0;
