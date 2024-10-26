@@ -94,13 +94,20 @@ extern "C" {
 #define BTN_S6_PRESSED	GPIO_PIN_RESET
 #define BTN_S6_HOVER	GPIO_PIN_SET
 
-
-
-
 #define LED_A_PIN		LD2_Pin
 #define LED_A_PORT		LD2_GPIO_Port
 #define LED_A_ON		GPIO_PIN_SET
 #define LED_A_OFF		GPIO_PIN_RESET
+
+#define LED_01_PIN		LED_01_Pin
+#define LED_01_PORT		LED_01_GPIO_Port
+#define LED_01_ON		GPIO_PIN_SET
+#define LED_01_OFF		GPIO_PIN_RESET
+
+#define LED_02_PIN		LED_02_Pin
+#define LED_02_PORT		LED_02_GPIO_Port
+#define LED_02_ON		GPIO_PIN_SET
+#define LED_02_OFF		GPIO_PIN_RESET
 
 #endif/* STM32 Nucleo Boards - 144 Pins */
 

@@ -68,10 +68,10 @@ const task_sensor_cfg_t task_sensor_cfg_list[] = {
 	 EV_SYS_XX_CARIN,  EV_SYS_XX_NOCARIN},
 
 	{ID_BTN_S2,  BTN_S2_PORT,  BTN_S2_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX,
-	 EV_SYS_XX_ASKTICKET, NOEVENT},
+	 EV_SYS_XX_ASKTICKET,  EV_SYS_XX_NOTAKETICKET},
 
 	{ID_BTN_S3,  BTN_S3_PORT,  BTN_S3_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX,
-	 EV_SYS_XX_TAKETICKET,  EV_SYS_XX_NOTAKETICKET},
+	 EV_SYS_XX_TAKETICKET, NOEVENT},
 
 	{ID_BTN_S4,  BTN_S4_PORT,  BTN_S4_PIN,  BTN_A_PRESSED, DEL_BTN_XX_MAX,
 	 EV_SYS_XX_BARRIERUP,  NOEVENT},
@@ -222,24 +222,39 @@ void task_sensor_update(void *parameters)
 
 					if (EV_BTN_XX_DOWN == p_task_sensor_dta->event && p_task_sensor_dta->tick == 0 && p_task_sensor_dta->modo == 0)
 					{
+						if(p_task_sensor_cfg->button_first_tap == (task_sensor_ev_t)EV_SYS_XX_BARRIERDOWN)
+						{
+							for (uint32_t index1 = 0; SENSOR_DTA_QTY > index1; index1++)
+							{
+								task_sensor_dta_t *aux = &task_sensor_dta_list[index1];
+								aux->modo=0;
+							}
+							p_task_sensor_dta->modo = 1;
+						}
+
 						put_event_task_system(p_task_sensor_cfg->button_first_tap);
 						p_task_sensor_dta->state = ST_BTN_XX_DOWN;
+
+
 
 					}
 
 					if (EV_BTN_XX_DOWN == p_task_sensor_dta->event && p_task_sensor_dta->tick  == 0 && p_task_sensor_dta->modo  == 1)
 					{
 
+
 						if(p_task_sensor_cfg->button_second_tap == (task_sensor_ev_t)NOEVENT)
 							continue;
 
 						if(p_task_sensor_cfg->button_second_tap == (task_sensor_ev_t)EV_SYS_XX_NOCARIN){
-							for (uint32_t index1 = 0; SENSOR_DTA_QTY > index1; index1++){
+							for (uint32_t index1 = 0; SENSOR_DTA_QTY > index1; index1++)
+							{
 								task_sensor_dta_t *aux = &task_sensor_dta_list[index1];
 								aux->modo=0;
 							}
 							p_task_sensor_dta->modo = 1;
 						}
+
 						put_event_task_system(p_task_sensor_cfg->button_second_tap);
 						p_task_sensor_dta->state = ST_BTN_XX_DOWN;
 

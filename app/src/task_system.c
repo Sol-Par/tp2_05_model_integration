@@ -62,7 +62,7 @@
 
 /********************** internal data declaration ****************************/
 task_system_dta_t task_system_dta =
-	{DEL_SYS_XX_MIN, ST_SYS_XX_IDLE, EV_SYS_XX_IDLE, false};
+	{DEL_SYS_XX_MIN, ST_SYS_XX_START, EV_SYS_XX_IDLE, false};
 
 #define SYSTEM_DTA_QTY	(sizeof(task_system_dta)/sizeof(task_system_dta_t))
 
@@ -192,15 +192,13 @@ void task_system_update(void *parameters)
 					p_task_system_dta->state = ST_SYS_XX_START;
 					LOGGER_LOG("No carin\n");
 
-
-
 				}
 
 				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_ASKTICKET == p_task_system_dta->event))
 				{
 					p_task_system_dta->flag = false;
 					p_task_system_dta->state = ST_SYS_XX_PRINT;
-					put_event_task_actuator(EV_LED_XX_ON, ID_LED_A);
+					put_event_task_actuator(EV_LED_XX_ON, ID_LED_01);
 					LOGGER_LOG("Ask ticket\n");
 				}
 				break;
@@ -210,20 +208,21 @@ void task_system_update(void *parameters)
 				{
 					p_task_system_dta->flag = false;
 					p_task_system_dta->state = ST_SYS_XX_START;
-					put_event_task_actuator(EV_LED_XX_OFF, ID_LED_A);
+					put_event_task_actuator(EV_LED_XX_OFF, ID_LED_01);
 					LOGGER_LOG("No carin\n");
 				}
 				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_NOTAKETICKET == p_task_system_dta->event))
 				{
 					p_task_system_dta->flag = false;
 					p_task_system_dta->state = ST_SYS_XX_INSIDE;
-					put_event_task_actuator(EV_LED_XX_ON, ID_LED_A);
+					put_event_task_actuator(EV_LED_XX_OFF, ID_LED_01);
 					LOGGER_LOG("No take ticket\n");
 				}
 				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_TAKETICKET == p_task_system_dta->event))
 				{
 					p_task_system_dta->flag = false;
-					put_event_task_actuator(EV_LED_XX_BLINK, ID_LED_A);
+					put_event_task_actuator(EV_LED_XX_OFF, ID_LED_01);
+					put_event_task_actuator(EV_LED_XX_BLINK, ID_LED_02);
 					p_task_system_dta->state = ST_SYS_XX_PULLED;
 					LOGGER_LOG("Take ticket\n");
 				}
@@ -233,7 +232,7 @@ void task_system_update(void *parameters)
 				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_BARRIERUP == p_task_system_dta->event))
 				{
 					p_task_system_dta->flag = false;
-					put_event_task_actuator(EV_LED_XX_NO_BLINK, ID_LED_A);
+					put_event_task_actuator(EV_LED_XX_ON, ID_LED_02);
 					p_task_system_dta->state = ST_SYS_XX_OPEN;
 					LOGGER_LOG("Barrier up\n");
 				}
@@ -243,7 +242,7 @@ void task_system_update(void *parameters)
 				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_CAROUT == p_task_system_dta->event))
 				{
 					p_task_system_dta->flag = false;
-					put_event_task_actuator(EV_LED_XX_BLINK, ID_LED_A);
+					put_event_task_actuator(EV_LED_XX_BLINK, ID_LED_02);
 					p_task_system_dta->state = ST_SYS_XX_EXIT;
 					LOGGER_LOG("Carout\n");
 				}
@@ -253,7 +252,7 @@ void task_system_update(void *parameters)
 				if ((true == p_task_system_dta->flag) && (EV_SYS_XX_BARRIERDOWN== p_task_system_dta->event))
 				{
 					p_task_system_dta->flag = false;
-					put_event_task_actuator(EV_LED_XX_NO_BLINK, ID_LED_A);
+					put_event_task_actuator(EV_LED_XX_OFF, ID_LED_02);
 					p_task_system_dta->state = ST_SYS_XX_LOW;
 					LOGGER_LOG("Barrier down\n");
 				}

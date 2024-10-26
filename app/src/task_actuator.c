@@ -61,13 +61,22 @@
 /********************** internal data declaration ****************************/
 const task_actuator_cfg_t task_actuator_cfg_list[] = {
 	{ID_LED_A,  LED_A_PORT,  LED_A_PIN, LED_A_ON,  LED_A_OFF,
+	 DEL_LED_XX_BLI, DEL_LED_XX_PUL},
+
+	{ID_LED_01,  LED_01_PORT,  LED_01_PIN, LED_01_ON,  LED_01_OFF,
+	 DEL_LED_XX_BLI, DEL_LED_XX_PUL},
+
+	{ID_LED_02,  LED_02_PORT,  LED_02_PIN, LED_02_ON,  LED_02_OFF,
 	 DEL_LED_XX_BLI, DEL_LED_XX_PUL}
+
 };
 
 #define ACTUATOR_CFG_QTY	(sizeof(task_actuator_cfg_list)/sizeof(task_actuator_cfg_t))
 
 task_actuator_dta_t task_actuator_dta_list[] = {
-	{DEL_LED_XX_MIN, ST_LED_XX_OFF, EV_LED_XX_NO_BLINK, false}
+	{DEL_LED_XX_MIN, ST_LED_XX_OFF, EV_LED_XX_OFF, false},
+	{DEL_LED_XX_MIN, ST_LED_XX_OFF, EV_LED_XX_OFF, false},
+	{DEL_LED_XX_MIN, ST_LED_XX_OFF, EV_LED_XX_OFF, false}
 };
 
 #define ACTUATOR_DTA_QTY	(sizeof(task_actuator_dta_list)/sizeof(task_actuator_dta_t))
