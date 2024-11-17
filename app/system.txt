@@ -1,0 +1,69 @@
+task_system_attribute.h:
+Estructuras de datos
+
+task_system_st_t:Enumerador para cada uno de los estados del sistema
+ST_SYS_XX_IDLE,
+ST_SYS_XX_ACTIVE,
+ST_SYS_XX_START,
+ST_SYS_XX_INSIDE,
+ST_SYS_XX_PRINT,
+ST_SYS_XX_PULLED,
+ST_SYS_XX_OPEN,
+ST_SYS_XX_EXIT,
+ST_SYS_XX_LOW
+Los primeros dos estados son para el botón azul de la placa. Los demás estados son los definidos para la implementación del sistema definido.
+
+task_system_ev_t: Enumerador para cada uno de los eventos del sistema
+EV_SYS_XX_IDLE,
+EV_SYS_XX_ACTIVE,
+EV_SYS_XX_CARIN,
+EV_SYS_XX_NOCARIN,
+EV_SYS_XX_ASKTICKET,
+EV_SYS_XX_TAKETICKET,
+EV_SYS_XX_NOTAKETICKET,
+EV_SYS_XX_BARRIERUP,
+EV_SYS_XX_CAROUT,
+EV_SYS_XX_BARRIERDOWN.
+Los primeros dos eventos son para el botón azul de la placa. Los demás eventos son los definidos para la implementación del sistema definido.
+
+task_system_dta_t: Estructura de datos del estado y evento del sistema que se esté implementando en un instante dado. contiene un elemento del tipo task_system_ev_t (event) y otro del tipo task_system_st_t(state). Además se incluye un entero sin signo de 32 bits llamado tick y un booleano llamado flag.
+event: Define el tipo de evento como uno de los elementos del enumerador.
+state: Define el estado actual en el que se realiza el evento como uno de los elementos del enumerador.
+flag: Define si alguno de los eventos está activo.
+
+
+-------------------------
+
+
+task_system_interface.c:
+
+Estructuras de datos
+queue_task_a: Estructura que define una pila con la cantidad de eventos del sistema. Contiene 3 enteros sin signo de 32 bits llamados head (primer elemento de la cola), tail (último elemento de la cola) y count (cuenta la cantidad de eventos en la pila). Se le suma +1 a head si se agrega algún elemento a la pila y se le reduce -1 a tail si se saca un elemento de la pila. Ademas se agrega un elemento del tipo task_system_event_t llamado queue que es la pila donde se guarda y se sacan los eventos.
+
+Funciones
+init_queue_event_task_system: Función que recibe un parámetro void y devuelve void. Se utiliza para inicializar la pila, iniciando head, tail y count a cero y agregando a la cantidad elegida de eventos (MAX_EVENTS) un EVENT_UNDEFINED, que significa que no hay ningún evento en esa posición de la pila al inicio.
+
+put_event_task_system: Función que recibe un parámetro del tipo task_system_ev_t y devuelve void. Esta función se encarga de agregar el elemento del tipo task_system_ev_t en el tope de la pila, aumentando el contador de la cantidad de eventos (count) y el contador de head en +1 luego de agregar el evento a la pila. Si el contador de head alcanza MAX_EVENTS éste se resetea a 0.
+
+get_event_task_system: Función que recibe un parámetro del tipo void y devuelve un parámetro del tipo task_system_ev_t. Se encarga de sacar los elementos de la cola de la pila, restando -1 al contador de cantidad de eventos (count), obteniendo el evento de la cola y agregando en esta posición un EVENT_UNDEFINED , luego aumenta +1 al contador de la cola (tail). Si el contador de tail alcanza MAX_EVENTS éste se resetea a 0.
+
+any_event_task_system: Función que recibe un parámetro del tipo void y devuelve un parámetro booleano. Indica si hay algún evento por procesar en la pila comparando los valores de los contadores head y tail. Devuelve true si head != tail.
+
+
+-------------------------
+
+
+task_system.c:
+
+Se declara un elemento del tipo task_system_dta_t el cual se inicializa con un tick, evento, estado y flag = false inicial. Además se inicializan dos contadores: g_task_system_cnt y g_task_system_tick_cnt.
+
+Funciones
+
+task_system_init: Función que se encarga de iniciar las tareas del sistema, recibe un puntero a void como parámetro y devuelve void. Se llama a la función init_queue_event_task_system y se muestran en consola el estado, evento y flag con los que se inicializó el programa, definiendo un puntero que apunta al elemento del tipo task_system_dta_t definido inicialmente. 
+
+Los contadores se inicializan: g_task_system_cnt = G_TASK_SYS_CNT_INI y g_task_system_tick_cnt = G_TASK_SYS_TICK_CNT_INI.
+
+task_system_update: Función que se encarga de actualizar las tareas del sistema. Recibe un puntero a void de parámetro y devuelve void. 
+Se define un puntero task_system_dta_t *p_task_system_dta el y se inicializa un booleano b_time_update_required = false y luego se suma +1 al contador g_task_system_cnt. Luego,  si g_task_system_tick_cnt < G_TASK_SYS_TICK_CNT_INI, se cambia b_time_update_required a true y se le resta -1 al contador g_task_system_tick_cnt. Mientras se mantenga b_time_update_required = true se realiza un ciclo que va analizando los eventos del sistema.
+
+El ciclo realizado va actualizando el puntero p_task_system_dta que apunta al tipo task_system_dta_t definido inicialmente. Si true == any_event_task_system() se cambia la flag del puntero a true y se actualiza el evento (p_task_system_dta->event = get_event_task_system()). Luego se realiza un switch sobre p_task_system_dta->event que va cambiando de estados si p_task_system_dta->flag == true. Hay tantos case dentro del switch como estados del sistema se hayan definido.

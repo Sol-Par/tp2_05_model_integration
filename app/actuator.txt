@@ -1,0 +1,66 @@
+task_actuator.c:
+
+Se definen dos listas iniciales:
+task_actuator_cfg_t task_actuator_cfg_list: configuración inicial del actuador.
+task_actuator_dta_t task_actuator_dta_list: datos iniciales del actuador.
+
+Funciones:
+task_actuator_init: funcion que recibe void *parameters y devuelve void. En esta se inicializan el estado y evento inicial del actuador y a su vez dos punteros que apuntan a las listas definidas anteriormente. Además se definen los contadores que servirán para los ciclos de actualización de los actuadores.
+task_actuator_update: funcion que recibe void *parameters y devuelve void. En esta se definen dos punteros que apuntan a las listas de datos y configuracion del actuador, ademas de un booleano b_time_update_required = false que cambiaraa de estado dependiendo de los valores de los contadores. Mientras el booleano sea verdadero se actualizarán los punteros que apuntan a las listas de configuración y datos del actuador (se realiza un switch de p_task_actuator_dta->state con tantos case como estados se hayan definido, que en este caso fueron ST_LED_XX_ON,                          ST_LED_XX_OFF,ST_LED_XX_BLINK_ON,ST_LED_XX_BLINK_OFF y       ST_LED_XX_PULSE.                  
+
+
+-------------------------
+
+
+task_actuator_interface.c:
+
+Funciones:
+
+put_event_task_actuator: Función que recibe parámetros: (task_actuator_ev_t y task_actuator_id_t) y devuelve void. Esta función se encarga de manejar la asignación de un evento al actuador que se le indica. Recibe el evento a ejecutar y el identificador del actuador responsable a ejecutar el evento, y le configura en su estructura de datos “task_actuator_dta_t” el evento y le enciende la flag para indicar un evento pendiente.
+
+
+-------------------------
+
+
+task_actuator_attribute.h:
+
+Estructuras de datos:
+
+Se tienen 3 enumeradores:
+task_actuator_ev_t: Enumera los eventos del actuador:
+EV_LED_XX_ON,
+EV_LED_XX_NO_BLINK,
+EV_LED_XX_BLINK,
+EV_LED_XX_PULSE
+
+
+task_actuator_st_t: Enumera los estados del actuador:
+ST_LED_XX_ON, 
+ST_LED_XX_OFF,
+ST_LED_XX_BLINK_ON,
+ST_LED_XX_BLINK_OFF,
+ST_LED_XX_PULSE
+
+
+task_actuator_id_t: Enumera cada uno de los actuadores utilizados:
+ID_LED_A, 
+ID_LED_01, 
+ID_LED_02
+
+
+task_actuator_cfg_t: Estructura que contiene la configuración del actuador. Contiene los siguientes elementos:
+task_actuator_id_t identifier: Identificador del enumerador para el actuador.
+GPIO_TypeDef * gpio_port: Define el puerto utilizado para el pin en la placa.
+uint16_t pin: Es el número de pin utilizado.
+GPIO_PinState pressed: Se utiliza para realizar una lectura del pin a través de la estructura HAL_GPIO_ReadPin.
+uint32_t tick_blink: La máxima cantidad de ticks que se configura para que el actuador parpadee.
+uint32_t tick_pulse: La máxima cantidad de ticks que se configura para que el actuador realice un pulso.
+
+
+task_actuator_dta_t: Estructura de datos del actuador:
+
+
+uint32_t tick: Define el tiempo que dura cada tick del actuador.
+task_actuator_st_t state: Define el estado actual en el que se realiza el evento como uno de los elementos del enumerador.
+task_actuator_ev_t event: Define el tipo de evento como uno de los elementos del enumerador.
+flag: Define si alguno de los eventos está activo.
